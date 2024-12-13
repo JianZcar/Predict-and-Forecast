@@ -24,23 +24,32 @@ def applyFormula(value, x, table, n):
     return sum_
 
 def linear_regression_forecast(x, y, k):
+    # Get indices where y is not NaN
     known_indices = np.where(~np.isnan(y))[0]
     known_x = x[known_indices]
     known_y = y[known_indices]
 
+    # Calculate mean of known x and y values
     x_mean = np.mean(known_x)
     y_mean = np.mean(known_y)
+
+    # Calculate the slope (b1) and intercept (b0)
     b1 = np.sum((known_x - x_mean) * (known_y - y_mean)) / np.sum((known_x - x_mean) ** 2)
     b0 = y_mean - b1 * x_mean
 
+    # Update NaN values in y using the regression equation
     for i in range(len(y)):
         if np.isnan(y[i]):
             y[i] = b0 + b1 * x[i]
 
+    # Forecast future points
     max_x = max(x)
     future_x = np.array([max_x + i for i in range(1, k + 1)])
+
+    # Calculate future y values using the linear regression formula
     future_y = b0 + b1 * future_x
 
+    # Return the forecasted x and y values
     return future_x, future_y
 
 def display_table(x, y):
@@ -96,7 +105,6 @@ def main():
                 plt.legend()
                 plt.grid(True)
                 plt.show()
-
 
             elif choice == 2:
                 x = data['x'].values
